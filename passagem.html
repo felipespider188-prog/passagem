@@ -1,0 +1,194 @@
+html = r'''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passagem de Turno</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f6f8;color:#17202a}
+button,input,textarea,select{font:inherit}.sidebar{position:fixed;left:0;top:0;bottom:0;width:235px;background:#111827;color:#fff;padding:28px 18px}.brand{font-size:20px;line-height:1.1;margin:0 10px 45px}.brand span{font-size:25px}.nav button{display:block;width:100%;text-align:left;border:0;background:transparent;color:#cbd5e1;padding:13px 12px;border-radius:9px;margin:5px 0;cursor:pointer}.nav button:hover,.nav button.active{background:#1f2937;color:#fff}.side-note{position:absolute;bottom:28px;color:#64748b;font-size:12px;margin:0 10px}
+.main{margin-left:235px;padding:38px 44px;max-width:1500px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.eyebrow{font-size:11px;letter-spacing:1.5px;color:#64748b;font-weight:700}h1{font-size:30px;margin:5px 0}h2{margin:7px 0 3px;font-size:19px}.top p{margin:0;color:#6b7280}
+.btn{display:inline-block;border:1px solid #e5e7eb;background:#fff;color:#17202a;padding:11px 16px;border-radius:9px;font-weight:650;cursor:pointer;text-decoration:none}.primary{background:#1f2937!important;color:#fff!important;border-color:#1f2937!important}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:22px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:18px}.card small,.card span{display:block;color:#6b7280}.card strong{display:block;font-size:30px;margin:5px 0}.danger strong{color:#dc2626}.warning strong{color:#d97706}.success strong{color:#059669}
+.toolbar{display:flex;gap:10px;margin-bottom:16px}.toolbar input{flex:1}.toolbar input,.toolbar select{border:1px solid #e5e7eb;border-radius:9px;background:#fff;padding:11px 13px;outline:none}
+.list{display:grid;gap:13px}.occ{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:20px}.occ-head{display:flex;justify-content:space-between}.occ-head p{color:#6b7280;margin-top:0}.actions{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}.actions button{border:0;background:none;color:#2563eb;cursor:pointer}.actions .red{color:#dc2626}.status{display:inline-block;border-radius:99px;padding:4px 8px;font-size:11px;font-weight:700;background:#f3f4f6;color:#4b5563}.status.Pendente{background:#fee2e2;color:#b91c1c}.status.Em-andamento{background:#fef3c7;color:#92400e}.status.Resolvido{background:#d1fae5;color:#047857}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;border-top:1px solid #e5e7eb;margin-top:15px;padding-top:15px}.grid label{font-size:11px;text-transform:uppercase;color:#9ca3af;font-weight:700}.grid p{margin:5px 0;line-height:1.45}.foot{display:flex;gap:22px;border-top:1px solid #e5e7eb;margin-top:15px;padding-top:12px;color:#6b7280;font-size:12px}.foot a{color:#2563eb}.empty{background:#fff;border:1px dashed #cbd5e1;padding:35px;text-align:center;border-radius:13px;color:#6b7280}
+.form{max-width:1000px}.form-card{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:22px;margin-bottom:15px}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}label{display:block;font-size:12px;font-weight:700;color:#4b5563;margin-bottom:15px}input,textarea,select{width:100%;display:block;margin-top:7px;border:1px solid #e5e7eb;border-radius:8px;padding:11px;background:#fff;color:#17202a}textarea{min-height:95px;resize:vertical}.form-actions{display:flex;justify-content:flex-end;gap:10px}
+.handover{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:28px;max-width:1100px}.handover-head{display:flex;justify-content:space-between;border-bottom:2px solid #111827;padding-bottom:15px;margin-bottom:10px}.handover-head span{color:#6b7280}.handover-item{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid #e5e7eb}.number{width:30px;height:30px;border-radius:50%;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;flex:none}.hi-body{flex:1}.hi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 25px}.hi-grid p{margin:5px 0;line-height:1.5}.hi-grid a{color:#2563eb}.obs{background:#f8fafc;padding:10px;border-radius:7px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modal-box{background:#fff;border-radius:14px;width:min(1000px,100%);max-height:92vh;overflow:auto;padding:24px}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#f3f4f6;border-radius:50%;width:34px;height:34px;cursor:pointer}.toast{position:fixed;right:25px;top:20px;background:#111827;color:#fff;padding:12px 17px;border-radius:9px;z-index:20}
+@media(max-width:900px){.sidebar{position:static;width:auto;height:auto}.main{margin-left:0;padding:22px}.cards{grid-template-columns:1fr 1fr}.grid,.hi-grid,.row{grid-template-columns:1fr}.top{gap:15px;align-items:flex-start}.toolbar{flex-wrap:wrap}.toolbar input{min-width:100%}}
+@media print{.sidebar,.btn,.actions,.toolbar,.no-print{display:none!important}.main{margin:0;padding:0}.handover{border:0}.top{margin-bottom:15px}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand"><span>◈</span> Passagem<br><b>de Turno</b></div>
+  <div class="nav">
+    <button onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</button>
+    <button onclick="showPage('nova')" id="nav-nova">＋ Nova ocorrência</button>
+    <button onclick="showPage('passagem')" id="nav-passagem">Passagem de turno</button>
+  </div>
+  <div class="side-note">Sistema local<br>Os dados ficam salvos neste navegador.</div>
+</aside>
+
+<main class="main">
+<section id="dashboard">
+<header class="top">
+<div><div class="eyebrow">CENTRAL DE OPERAÇÕES</div><h1>Dashboard</h1><p>Acompanhamento das ocorrências do plantão.</p></div>
+<button class="btn primary" onclick="showPage('nova')">＋ Nova ocorrência</button>
+</header>
+<section class="cards">
+<div class="card"><small>Total</small><strong id="total">0</strong><span>ocorrências</span></div>
+<div class="card danger"><small>Pendentes</small><strong id="pendentes">0</strong><span>aguardando ação</span></div>
+<div class="card warning"><small>Em andamento</small><strong id="andamento">0</strong><span>em tratamento</span></div>
+<div class="card success"><small>Resolvidas</small><strong id="resolvidas">0</strong><span>finalizadas</span></div>
+</section>
+<div class="toolbar">
+<input id="busca" placeholder="Buscar cliente, situação ou ticket..." oninput="renderLista()">
+<select id="filtro" onchange="renderLista()"><option value="">Todos os status</option><option>Pendente</option><option>Em andamento</option><option>Resolvido</option></select>
+<button class="btn" onclick="showPage('passagem')">Gerar passagem</button>
+<button class="btn" onclick="exportar()">Backup</button>
+<button class="btn" onclick="document.getElementById('importFile').click()">Restaurar</button>
+<input type="file" id="importFile" accept=".json" hidden onchange="importar(event)">
+</div>
+<div class="list" id="lista"></div>
+</section>
+
+<section id="nova" style="display:none">
+<header class="top"><div><div class="eyebrow">REGISTRO OPERACIONAL</div><h1 id="formTitle">Nova ocorrência</h1><p>Preencha os dados para deixar a pendência clara para o próximo plantão.</p></div></header>
+<form class="form" id="formOcorrencia" onsubmit="salvar(event)">
+<input type="hidden" id="editId">
+<section class="form-card"><h3>Identificação</h3>
+<div class="row">
+<label>Cliente *<input id="cliente" required placeholder="Ex.: MRV PRIMAVERA GARDEN"></label>
+<label>Plantão<input id="plantao" placeholder="Ex.: Felipe Dantas"></label>
+</div>
+<div class="row">
+<label>Responsável / Área<input id="responsavel" placeholder="Ex.: N1 / Manutenção / Cliente"></label>
+<label>Status<select id="status"><option>Pendente</option><option>Em andamento</option><option>Resolvido</option></select></label>
+</div></section>
+<section class="form-card"><h3>Ocorrência</h3>
+<label>Passagem Anterior / Histórico<textarea id="passagemAnterior" placeholder="Cole ou informe o histórico de ocorrências anteriores..."></textarea></label>
+<label>Situação / Nova Ocorrência *<textarea id="situacao" required placeholder="Descreva o problema ou a nova ocorrência identificada..."></textarea></label>
+<label>Ação realizada<textarea id="acao" placeholder="Informe o que já foi feito..."></textarea></label>
+<label>Demanda pendente<textarea id="demanda" placeholder="O que o próximo plantão precisa fazer?"></textarea></label>
+</section>
+<section class="form-card"><h3>Próximo passo</h3>
+<div class="row">
+<label>Próxima ação<input id="proximaAcao"></label>
+<label>Prazo / horário<input id="prazo" placeholder="Ex.: 31/08 às 01:30"></label>
+</div>
+<label>Observações<textarea id="observacoes"></textarea></label></section>
+<section class="form-card"><h3>Ticket</h3>
+<div class="row">
+<label>Número / ID<input id="ticket" placeholder="Ex.: 150184"></label>
+<label>Link do ticket<input id="ticketUrl" type="url" placeholder="https://..."></label>
+</div></section>
+<div class="form-actions"><button type="button" class="btn" onclick="showPage('dashboard')">Cancelar</button><button class="btn primary" type="submit">Salvar ocorrência</button></div>
+</form>
+</section>
+
+<section id="passagem" style="display:none">
+<header class="top"><div><div class="eyebrow">HANDOVER OPERACIONAL</div><h1>Passagem de turno</h1><p>Resumo automático das ocorrências ainda não resolvidas.</p></div><button class="btn primary" onclick="window.print()">Imprimir / Salvar PDF</button></header>
+<div class="handover">
+<div class="handover-head"><div><b>PASSAGEM DE TURNO</b><br><span id="handoverCount"></span></div><div>Data: <b id="dataAtual"></b></div></div>
+<div id="handoverList"></div>
+</div>
+</section>
+</main>
+
+<div class="modal" id="modal">
+<div class="modal-box"><div class="modal-head"><h2>Ocorrência</h2><button class="close" onclick="fecharModal()">×</button></div><div id="modalBody"></div></div>
+</div>
+<div id="toast"></div>
+
+<script>
+const KEY='passagem_turno_ocorrencias_v1';
+let dados=JSON.parse(localStorage.getItem(KEY)||'[]');
+
+function save(){localStorage.setItem(KEY,JSON.stringify(dados));}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function nl(v){return esc(v).replace(/\n/g,'<br>')}
+function toast(t){const x=document.getElementById('toast');x.className='toast';x.textContent=t;setTimeout(()=>x.className='',2500)}
+
+function showPage(page){
+ ['dashboard','nova','passagem'].forEach(x=>document.getElementById(x).style.display=x===page?'block':'none');
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+ document.getElementById('nav-'+page).classList.add('active');
+ if(page==='dashboard') renderLista();
+ if(page==='passagem') renderPassagem();
+ if(page==='nova' && !document.getElementById('editId').value) limparForm();
+ window.scrollTo(0,0);
+}
+
+function renderLista(){
+ const q=document.getElementById('busca').value.toLowerCase(), f=document.getElementById('filtro').value;
+ const arr=dados.filter(o=>(!q||(o.cliente+' '+o.situacao+' '+o.ticket+' '+(o.passagemAnterior||'')).toLowerCase().includes(q))&&(!f||o.status===f));
+ document.getElementById('lista').innerHTML=arr.length?arr.map(o=>`
+<article class="occ">
+<div class="occ-head"><div><span class="status ${o.status.replace(' ','-')}">${esc(o.status)}</span><h2>${esc(o.cliente)}</h2><p>${nl(o.situacao)}</p></div>
+<div class="actions"><button onclick="editar('${o.id}')">Editar</button>${o.status!=='Resolvido'?`<button onclick="resolver('${o.id}')">Resolver</button>`:''}<button class="red" onclick="excluir('${o.id}')">Excluir</button></div></div>
+<div class="grid">
+<div><label>Passagem Anterior</label><p>${nl(o.passagemAnterior)||'—'}</p></div><div><label>Ação</label><p>${nl(o.acao)||'—'}</p></div><div><label>Demanda</label><p>${nl(o.demanda)||'—'}</p></div>
+<div><label>Responsável / Área</label><p>${esc(o.responsavel)||'—'}</p></div><div><label>Plantão</label><p>${esc(o.plantao)||'—'}</p></div>
+<div><label>Próxima ação</label><p>${esc(o.proximaAcao)||'—'}</p></div><div><label>Prazo</label><p>${esc(o.prazo)||'—'}</p></div>
+</div><div class="foot"><span>Ticket: <b>${esc(o.ticket)||'Não informado'}</b></span>${o.ticketUrl?`<a href="${esc(o.ticketUrl)}" target="_blank">Abrir ticket ↗</a>`:''}<span>Atualizado: ${esc(o.atualizadoEm)}</span></div>
+</article>`).join(''):'<div class="empty">Nenhuma ocorrência encontrada.</div>';
+document.getElementById('total').textContent=dados.length;
+document.getElementById('pendentes').textContent=dados.filter(x=>x.status==='Pendente').length;
+document.getElementById('andamento').textContent=dados.filter(x=>x.status==='Em andamento').length;
+document.getElementById('resolvidas').textContent=dados.filter(x=>x.status==='Resolvido').length;
+}
+
+function salvar(e){
+ e.preventDefault();
+ const campos=['cliente','passagemAnterior','situacao','acao','responsavel','plantao','demanda','status','proximaAcao','prazo','observacoes','ticket','ticketUrl'];
+ const o=Object.fromEntries(campos.map(c=>[c,document.getElementById(c).value.trim()]));
+ const agora=new Date().toLocaleString('pt-BR');
+ const eid=document.getElementById('editId').value;
+ if(eid){let i=dados.findIndex(x=>x.id===eid);dados[i]={...dados[i],...o,atualizadoEm:agora}}
+ else dados.unshift({id:id(),...o,criadoEm:agora,atualizadoEm:agora});
+ save();toast(eid?'Ocorrência atualizada!':'Ocorrência cadastrada!');
+ document.getElementById('editId').value='';showPage('dashboard');
+}
+
+function limparForm(){
+ document.getElementById('formOcorrencia').reset();document.getElementById('editId').value='';
+ document.getElementById('formTitle').textContent='Nova ocorrência';
+ document.getElementById('status').value='Pendente';
+}
+function editar(eid){
+ const o=dados.find(x=>x.id===eid);if(!o)return;
+ document.getElementById('editId').value=eid;document.getElementById('formTitle').textContent='Editar ocorrência';
+ ['cliente','passagemAnterior','situacao','acao','responsavel','plantao','demanda','status','proximaAcao','prazo','observacoes','ticket','ticketUrl'].forEach(c=>document.getElementById(c).value=o[c]||'');
+ showPage('nova');
+}
+function resolver(eid){let o=dados.find(x=>x.id===eid);o.status='Resolvido';o.atualizadoEm=new Date().toLocaleString('pt-BR');save();renderLista();toast('Ocorrência marcada como resolvida.')}
+function excluir(eid){if(confirm('Excluir esta ocorrência?')){dados=dados.filter(x=>x.id!==eid);save();renderLista();toast('Ocorrência excluída.')}}
+function renderPassagem(){
+ const arr=dados.filter(x=>x.status!=='Resolvido');
+ document.getElementById('handoverCount').textContent=arr.length+' ocorrência(s) pendente(s)';
+ document.getElementById('dataAtual').textContent=new Date().toLocaleString('pt-BR');
+ document.getElementById('handoverList').innerHTML=arr.length?arr.map((o,i)=>`
+<section class="handover-item"><div class="number">${i+1}</div><div class="hi-body"><h2>${esc(o.cliente)} <span class="status ${o.status.replace(' ','-')}">${esc(o.status)}</span></h2>
+<div class="hi-grid">${o.passagemAnterior?`<p><b>Passagem Anterior:</b> ${nl(o.passagemAnterior)}</p>`:''}<p><b>Situação / Nova Ocorrência:</b> ${nl(o.situacao)||'—'}</p><p><b>Ação:</b> ${nl(o.acao)||'—'}</p><p><b>Responsável/Área:</b> ${esc(o.responsavel)||'—'}</p><p><b>Plantão:</b> ${esc(o.plantao)||'—'}</p><p><b>Demanda:</b> ${nl(o.demanda)||'—'}</p><p><b>Próxima ação:</b> ${esc(o.proximaAcao)||'—'}</p><p><b>Prazo:</b> ${esc(o.prazo)||'—'}</p><p><b>Ticket:</b> ${o.ticketUrl?`<a href="${esc(o.ticketUrl)}" target="_blank">${esc(o.ticket||'Abrir ticket')}</a>`:esc(o.ticket)||'—'}</p></div>${o.observacoes?`<p class="obs"><b>Observações:</b> ${nl(o.observacoes)}</p>`:''}</div></section>`).join(''):'<div class="empty">Não existem pendências para o próximo plantão.</div>';
+}
+function exportar(){
+ const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'}),a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download='backup_passagem_turno.json';a.click();URL.revokeObjectURL(a.href);
+}
+function importar(e){
+ const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x))throw 0;if(confirm('Substituir os dados atuais pelo backup?')){dados=x;save();renderLista();toast('Backup restaurado.')}}catch{alert('Arquivo de backup inválido.')}};
+ r.readAsText(f);e.target.value='';
+}
+showPage('dashboard');
+</script>
+</body>
+</html>'''
+
+path=Path("/mnt/data/passagem_turno.html")
+path.write_text(html,encoding="utf-8")
+print(path)
