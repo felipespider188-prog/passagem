@@ -1,4 +1,3 @@
-html = r'''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -69,8 +68,7 @@ button,input,textarea,select{font:inherit}.sidebar{position:fixed;left:0;top:0;b
 <label>Status<select id="status"><option>Pendente</option><option>Em andamento</option><option>Resolvido</option></select></label>
 </div></section>
 <section class="form-card"><h3>Ocorrência</h3>
-<label>Passagem Anterior / Histórico<textarea id="passagemAnterior" placeholder="Cole ou informe o histórico de ocorrências anteriores..."></textarea></label>
-<label>Situação / Nova Ocorrência *<textarea id="situacao" required placeholder="Descreva o problema ou a nova ocorrência identificada..."></textarea></label>
+<label>Situação *<textarea id="situacao" required placeholder="Descreva o problema identificado..."></textarea></label>
 <label>Ação realizada<textarea id="acao" placeholder="Informe o que já foi feito..."></textarea></label>
 <label>Demanda pendente<textarea id="demanda" placeholder="O que o próximo plantão precisa fazer?"></textarea></label>
 </section>
@@ -125,13 +123,13 @@ function showPage(page){
 
 function renderLista(){
  const q=document.getElementById('busca').value.toLowerCase(), f=document.getElementById('filtro').value;
- const arr=dados.filter(o=>(!q||(o.cliente+' '+o.situacao+' '+o.ticket+' '+(o.passagemAnterior||'')).toLowerCase().includes(q))&&(!f||o.status===f));
+ const arr=dados.filter(o=>(!q||(o.cliente+' '+o.situacao+' '+o.ticket).toLowerCase().includes(q))&&(!f||o.status===f));
  document.getElementById('lista').innerHTML=arr.length?arr.map(o=>`
 <article class="occ">
 <div class="occ-head"><div><span class="status ${o.status.replace(' ','-')}">${esc(o.status)}</span><h2>${esc(o.cliente)}</h2><p>${nl(o.situacao)}</p></div>
 <div class="actions"><button onclick="editar('${o.id}')">Editar</button>${o.status!=='Resolvido'?`<button onclick="resolver('${o.id}')">Resolver</button>`:''}<button class="red" onclick="excluir('${o.id}')">Excluir</button></div></div>
 <div class="grid">
-<div><label>Passagem Anterior</label><p>${nl(o.passagemAnterior)||'—'}</p></div><div><label>Ação</label><p>${nl(o.acao)||'—'}</p></div><div><label>Demanda</label><p>${nl(o.demanda)||'—'}</p></div>
+<div><label>Ação</label><p>${nl(o.acao)||'—'}</p></div><div><label>Demanda</label><p>${nl(o.demanda)||'—'}</p></div>
 <div><label>Responsável / Área</label><p>${esc(o.responsavel)||'—'}</p></div><div><label>Plantão</label><p>${esc(o.plantao)||'—'}</p></div>
 <div><label>Próxima ação</label><p>${esc(o.proximaAcao)||'—'}</p></div><div><label>Prazo</label><p>${esc(o.prazo)||'—'}</p></div>
 </div><div class="foot"><span>Ticket: <b>${esc(o.ticket)||'Não informado'}</b></span>${o.ticketUrl?`<a href="${esc(o.ticketUrl)}" target="_blank">Abrir ticket ↗</a>`:''}<span>Atualizado: ${esc(o.atualizadoEm)}</span></div>
@@ -144,7 +142,7 @@ document.getElementById('resolvidas').textContent=dados.filter(x=>x.status==='Re
 
 function salvar(e){
  e.preventDefault();
- const campos=['cliente','passagemAnterior','situacao','acao','responsavel','plantao','demanda','status','proximaAcao','prazo','observacoes','ticket','ticketUrl'];
+ const campos=['cliente','situacao','acao','responsavel','plantao','demanda','status','proximaAcao','prazo','observacoes','ticket','ticketUrl'];
  const o=Object.fromEntries(campos.map(c=>[c,document.getElementById(c).value.trim()]));
  const agora=new Date().toLocaleString('pt-BR');
  const eid=document.getElementById('editId').value;
@@ -162,7 +160,7 @@ function limparForm(){
 function editar(eid){
  const o=dados.find(x=>x.id===eid);if(!o)return;
  document.getElementById('editId').value=eid;document.getElementById('formTitle').textContent='Editar ocorrência';
- ['cliente','passagemAnterior','situacao','acao','responsavel','plantao','demanda','status','proximaAcao','prazo','observacoes','ticket','ticketUrl'].forEach(c=>document.getElementById(c).value=o[c]||'');
+ ['cliente','situacao','acao','responsavel','plantao','demanda','status','proximaAcao','prazo','observacoes','ticket','ticketUrl'].forEach(c=>document.getElementById(c).value=o[c]||'');
  showPage('nova');
 }
 function resolver(eid){let o=dados.find(x=>x.id===eid);o.status='Resolvido';o.atualizadoEm=new Date().toLocaleString('pt-BR');save();renderLista();toast('Ocorrência marcada como resolvida.')}
@@ -173,7 +171,7 @@ function renderPassagem(){
  document.getElementById('dataAtual').textContent=new Date().toLocaleString('pt-BR');
  document.getElementById('handoverList').innerHTML=arr.length?arr.map((o,i)=>`
 <section class="handover-item"><div class="number">${i+1}</div><div class="hi-body"><h2>${esc(o.cliente)} <span class="status ${o.status.replace(' ','-')}">${esc(o.status)}</span></h2>
-<div class="hi-grid">${o.passagemAnterior?`<p><b>Passagem Anterior:</b> ${nl(o.passagemAnterior)}</p>`:''}<p><b>Situação / Nova Ocorrência:</b> ${nl(o.situacao)||'—'}</p><p><b>Ação:</b> ${nl(o.acao)||'—'}</p><p><b>Responsável/Área:</b> ${esc(o.responsavel)||'—'}</p><p><b>Plantão:</b> ${esc(o.plantao)||'—'}</p><p><b>Demanda:</b> ${nl(o.demanda)||'—'}</p><p><b>Próxima ação:</b> ${esc(o.proximaAcao)||'—'}</p><p><b>Prazo:</b> ${esc(o.prazo)||'—'}</p><p><b>Ticket:</b> ${o.ticketUrl?`<a href="${esc(o.ticketUrl)}" target="_blank">${esc(o.ticket||'Abrir ticket')}</a>`:esc(o.ticket)||'—'}</p></div>${o.observacoes?`<p class="obs"><b>Observações:</b> ${nl(o.observacoes)}</p>`:''}</div></section>`).join(''):'<div class="empty">Não existem pendências para o próximo plantão.</div>';
+<div class="hi-grid"><p><b>Situação:</b> ${nl(o.situacao)||'—'}</p><p><b>Ação:</b> ${nl(o.acao)||'—'}</p><p><b>Responsável/Área:</b> ${esc(o.responsavel)||'—'}</p><p><b>Plantão:</b> ${esc(o.plantao)||'—'}</p><p><b>Demanda:</b> ${nl(o.demanda)||'—'}</p><p><b>Próxima ação:</b> ${esc(o.proximaAcao)||'—'}</p><p><b>Prazo:</b> ${esc(o.prazo)||'—'}</p><p><b>Ticket:</b> ${o.ticketUrl?`<a href="${esc(o.ticketUrl)}" target="_blank">${esc(o.ticket||'Abrir ticket')}</a>`:esc(o.ticket)||'—'}</p></div>${o.observacoes?`<p class="obs"><b>Observações:</b> ${nl(o.observacoes)}</p>`:''}</div></section>`).join(''):'<div class="empty">Não existem pendências para o próximo plantão.</div>';
 }
 function exportar(){
  const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'}),a=document.createElement('a');
@@ -187,3 +185,4 @@ function importar(e){
 showPage('dashboard');
 </script>
 </body>
+</html>
